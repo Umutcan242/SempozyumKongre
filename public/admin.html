@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli | Sempozyum & Kongre</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-section { max-width: 1100px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); padding: 2rem; }
+        .admin-section h2 { color: #2c3e50; margin-bottom: 1.5rem; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
+        .admin-table th, .admin-table td { border: 1px solid #eee; padding: 10px; text-align: left; }
+        .admin-table th { background: #f4f6f8; }
+        .admin-table tr:nth-child(even) { background: #fafbfc; }
+        
+        /* Action Buttons */
+        .admin-actions { white-space: nowrap; }
+        .admin-actions button { 
+            margin-right: 6px; 
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            min-width: 90px;
+        }
+        
+        /* Katılımcılar Butonu */
+        .admin-actions button:first-child {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        }
+        .admin-actions button:first-child:hover {
+            background: linear-gradient(135deg, #2980b9, #1f618d);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+        .admin-actions button:first-child:active {
+            transform: translateY(0);
+        }
+        
+        /* Sil Butonu */
+        .admin-actions button:last-child {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+        }
+        .admin-actions button:last-child:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+        .admin-actions button:last-child:active {
+            transform: translateY(0);
+        }
+        
+        /* Modal İçinde Silme Butonu */
+        .modal .admin-actions button {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            min-width: auto;
+        }
+        .modal .admin-actions button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+        
+        .admin-form { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+        .admin-form input, .admin-form select, .admin-form textarea { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; }
+        .admin-form label { font-weight: bold; }
+        .admin-form .form-group { flex: 1 1 200px; min-width: 180px; }
+        .admin-form button { background: #27ae60; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        .admin-form button:hover { background: #229954; }
+        .admin-message { margin-bottom: 1rem; padding: 10px; border-radius: 4px; }
+        .admin-message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .admin-message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        
+        /* Tab Styles */
+        .admin-tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid #dee2e6; margin-bottom: 2rem; }
+        .tab-button { background: none; border: none; padding: 1rem 2rem; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s; }
+        .tab-button:hover { background: #e9ecef; }
+        .tab-button.active { background: #fff; border-bottom-color: #3498db; font-weight: bold; }
+        
+        /* Admin Navbar Override */
+        .admin-navbar {
+            padding: 0.8rem 0 !important;
+        }
+        
+        .admin-nav-container {
+            max-width: 1400px !important;
+            margin: 0 auto !important;
+            padding: 0 30px !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+        
+        /* Admin Navbar Menü Stilleri */
+        .admin-navbar .nav-menu {
+            display: flex !important;
+            gap: 0.5rem !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        .admin-navbar .nav-item {
+            margin: 0 !important;
+        }
+        
+        .admin-navbar .nav-link {
+            padding: 0.7rem 1.2rem !important;
+            background: #3498db !important;
+            color: white !important;
+            border-radius: 4px !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+        }
+        
+        .admin-navbar .nav-link:hover {
+            background: #2980b9 !important;
+        }
+        
+        .admin-nav-logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.75rem !important;
+        }
+        
+        .admin-nav-logo h3 {
+            font-size: 1rem !important;
+            font-weight: 600 !important;
+            margin: 0 !important;
+        }
+        
+        .admin-nav-logo .logo-img {
+            height: 60px !important;
+        }
+        .admin-content { display: none; }
+        .admin-content:first-of-type { display: block; }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            padding: 2rem;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 1rem;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            color: #2c3e50;
+        }
+        
+        .close-btn {
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .close-btn:hover {
+            color: #000;
+        }
+        
+        /* Başvuru durumu badge'leri */ 
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.85em; font-weight: bold; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-sent_to_referee { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        
+        /* Duyuru badge'leri */
+        .type-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.85em; font-weight: bold; }
+        .type-info { background: #d1ecf1; color: #0c5460; }
+        .type-warning { background: #fff3cd; color: #856404; }
+        .type-success { background: #d4edda; color: #155724; }
+        .type-event { background: #e2e3f1; color: #383d41; }
+        
+        .priority-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.85em; font-weight: bold; }
+        .priority-normal { background: #f8f9fa; color: #495057; }
+        .priority-high { background: #fff3cd; color: #856404; }
+        .priority-urgent { background: #f8d7da; color: #721c24; }
+        
+        .status-active { background: #d4edda; color: #155724; }
+        .status-inactive { background: #f8d7da; color: #721c24; }
+        .status-banned { background: #f8d7da; color: #721c24; }
+        
+        /* Header navigation özel stilleri */
+        .nav-menu .nav-item:first-child .nav-link {
+            background: #3498db;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin-right: 1rem;
+            transition: background 0.3s;
+        }
+        
+        .nav-menu .nav-item:first-child .nav-link:hover {
+            background: #2980b9;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar admin-navbar">
+            <div class="nav-container admin-nav-container">
+                <div class="nav-logo admin-nav-logo">
+                    <img src="image/mtülogo.png" alt="MTÜ Logo" class="logo-img">
+                    <h3>Malatya Turgut Özal Üniversitesi - Admin Paneli</h3>
+                </div>
+                 <ul class="nav-menu">
+                    <li class="nav-item"><a href="#" class="nav-link" onclick="showAdminTab('events')">Etkinlikler</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link" onclick="showAdminTab('users')">Kullanıcılar</a></li>
+                </ul>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="#" class="nav-link" onclick="showAdminTab('applications')">Başvurular</a></li>
+                    <li class="nav-item"><a href="index.html" class="nav-link">Siteye Dön</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <!-- Admin Tab Navigation -->
+        <div class="admin-tabs">
+            <button class="tab-button active" onclick="showAdminTab('events')">Etkinlikler</button>
+            <button class="tab-button" onclick="showAdminTab('speakers')">Konuşmacılar</button>
+            <button class="tab-button" onclick="showAdminTab('users')">Kullanıcılar</button>
+            <button class="tab-button" onclick="showAdminTab('applications')">Başvurular</button>
+            <button class="tab-button" onclick="showAdminTab('announcements')">Duyurular</button>
+        </div>
+
+        <!-- Etkinlik Yönetimi -->
+        <section id="admin-events" class="admin-section admin-content">
+            <h2>Etkinlik Yönetimi</h2>
+            <form id="event-form" class="admin-form">
+                <div class="form-group">
+                    <label for="eventTitle">Başlık</label>
+                    <input type="text" id="eventTitle" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventDescription">Açıklama</label>
+                    <textarea id="eventDescription" name="description" required rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="eventDate">Tarih</label>
+                    <input type="datetime-local" id="eventDate" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventLocation">Konum</label>
+                    <input type="text" id="eventLocation" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventCapacity">Kapasite</label>
+                    <input type="number" id="eventCapacity" name="capacity" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventCategory">Kategori</label>
+                    <select id="eventCategory" name="category">
+                        <option value="sempozyum">Sempozyum</option>
+                        <option value="kongre">Kongre</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="panel">Panel</option>
+                        <option value="konferans">Konferans</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="eventFee">Ücret (₺)</label>
+                    <input type="number" id="eventFee" name="fee" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="eventOrganizer">Organizatör</label>
+                    <input type="text" id="eventOrganizer" name="organizer" required>
+                </div>
+                <button type="submit">Etkinlik Ekle</button>
+            </form>
+            <div id="event-message" class="admin-message" style="display:none;"></div>
+            <table class="admin-table" id="events-table">
+                <thead>
+                    <tr>
+                        <th>Başlık</th>
+                        <th>Açıklama</th>
+                        <th>Tarih</th>
+                        <th>Konum</th>
+                        <th>Kapasite</th>
+                        <th>Kategori</th>
+                        <th>Ücret</th>
+                        <th>Organizatör</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            
+            <!-- Konuşmacı Ekleme Bölümü -->
+            <div style="margin-top: 3rem; border-top: 2px solid #e9ecef; padding-top: 2rem;">
+                <h3 style="color: #2c3e50; margin-bottom: 1.5rem;">Konuşmacı Ekleme</h3>
+                
+                <form id="speaker-form-inline" class="admin-form" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                    <div class="form-group">
+                        <label for="speakerNameInline">Ad Soyad</label>
+                        <input type="text" id="speakerNameInline" name="name" required placeholder="Örn: Prof. Dr. Ahmet Yılmaz">
+                    </div>
+                    <div class="form-group">
+                        <label for="speakerEmailInline">E-posta</label>
+                        <input type="email" id="speakerEmailInline" name="email" required placeholder="ahmet@universite.edu.tr">
+                    </div>
+                    <div class="form-group">
+                        <label for="speakerTitleInline">Unvan</label>
+                        <input type="text" id="speakerTitleInline" name="title" required placeholder="Profesör Doktor">
+                    </div>
+                    <div class="form-group">
+                        <label for="speakerOrganizationInline">Kurum</label>
+                        <input type="text" id="speakerOrganizationInline" name="organization" required placeholder="İstanbul Üniversitesi">
+                    </div>
+                    <div class="form-group" style="flex-basis: 100%;">
+                        <label for="speakerBioInline">Biyografi</label>
+                        <textarea id="speakerBioInline" name="bio" rows="2" placeholder="Kısa biyografi (isteğe bağlı)"></textarea>
+                    </div>
+                    <div class="form-group" style="align-items: center;">
+                        <button type="submit" style="background: #17a2b8; color: white; padding: 10px 20px;">
+                            👤 Konuşmacı Ekle
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="speaker-message-inline" class="admin-message" style="display:none;"></div>
+                
+                <table class="admin-table" id="speakers-table-inline">
+                    <thead>
+                        <tr>
+                            <th>Ad Soyad</th>
+                            <th>E-posta</th>
+                            <th>Unvan</th>
+                            <th>Kurum</th>
+                            <th>Biyografi</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <!-- Duyuru Ekleme Bölümü -->
+            <div style="margin-top: 3rem; border-top: 2px solid #e9ecef; padding-top: 2rem;">
+                <h3 style="color: #2c3e50; margin-bottom: 1.5rem;">📢 Duyuru Ekleme</h3>
+                
+                <form id="announcement-form-inline" class="admin-form" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                    <div class="form-group">
+                        <label for="announcementTitleInline">Başlık</label>
+                        <input type="text" id="announcementTitleInline" name="title" required placeholder="Duyuru başlığı">
+                    </div>
+                    <div class="form-group">
+                        <label for="announcementTypeInline">Tür</label>
+                        <select id="announcementTypeInline" name="type" required>
+                            <option value="info">Bilgi</option>
+                            <option value="warning">Uyarı</option>
+                            <option value="success">Başarı</option>
+                            <option value="event">Etkinlik</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="announcementPriorityInline">Öncelik</label>
+                        <select id="announcementPriorityInline" name="priority" required>
+                            <option value="normal">Normal</option>
+                            <option value="high">Yüksek</option>
+                            <option value="urgent">Acil</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex-basis: 100%;">
+                        <label for="announcementContentInline">İçerik</label>
+                        <textarea id="announcementContentInline" name="content" rows="3" required placeholder="Duyuru içeriği..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="announcementDateInline">Tarih</label>
+                        <input type="datetime-local" id="announcementDateInline" name="date" placeholder="YYYY-MM-DD HH:MM">
+                    </div>
+                    <div class="form-group" style="align-items: center;">
+                        <button type="submit" style="background: #28a745; color: white; padding: 10px 20px;">
+                            📢 Duyuru Ekle
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="announcement-message-inline" class="admin-message" style="display:none;"></div>
+                
+                <table class="admin-table" id="announcements-table-inline">
+                    <thead>
+                        <tr>
+                            <th>Başlık</th>
+                            <th>Tür</th>
+                            <th>Öncelik</th>
+                            <th>Durum</th>
+                            <th>Tarih</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Konuşmacı Yönetimi -->
+        <section id="admin-speakers" class="admin-section admin-content" style="display: none;">
+            <h2>Konuşmacı Yönetimi</h2>
+            <form id="speaker-form" class="admin-form">
+                <div class="form-group">
+                    <label for="speakerName">Ad Soyad</label>
+                    <input type="text" id="speakerName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="speakerEmail">E-posta</label>
+                    <input type="email" id="speakerEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="speakerTitle">Unvan</label>
+                    <input type="text" id="speakerTitle" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="speakerOrganization">Kurum</label>
+                    <input type="text" id="speakerOrganization" name="organization" required>
+                </div>
+                <div class="form-group">
+                    <label for="speakerBio">Biyografi</label>
+                    <input type="text" id="speakerBio" name="bio">
+                </div>
+                <button type="submit">Konuşmacı Ekle</button>
+            </form>
+            <div id="speaker-message" class="admin-message" style="display:none;"></div>
+            <table class="admin-table" id="speakers-table">
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>E-posta</th>
+                        <th>Unvan</th>
+                        <th>Kurum</th>
+                        <th>Biyografi</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <!-- Başvuru Yönetimi -->
+        <section id="admin-applications" class="admin-section admin-content" style="display: none;">
+            <h2>Başvuru Yönetimi</h2>
+            <div id="application-message" class="admin-message" style="display: none;"></div>
+            
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Başvuru Türü</th>
+                        <th>Konuşmacı</th>
+                        <th>Sunum Başlığı</th>
+                        <th>Kurum</th>
+                        <th>İstenilen Tarih</th>
+                        <th>Süre</th>
+                        <th>Durum</th>
+                        <th>Başvuru Tarihi</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="applications-table-body">
+                </tbody>
+            </table>
+
+            <!-- Başvuru Detay Modal -->
+            <div id="application-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+                <div style="position: relative; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 8px; max-width: 600px; max-height: 80%; overflow-y: auto;">
+                    <h3 id="modal-title">Başvuru Detayları</h3>
+                    <div id="modal-content"></div>
+                    
+                    <div style="margin-top: 1rem;">
+                        <label for="review-status">Durum:</label>
+                        <select id="review-status" style="margin: 0.5rem 0; padding: 0.5rem; width: 100%;">
+                            <option value="pending">Beklemede</option>
+                            <option value="sent_to_referee">Hakeme İlet</option>
+                            <option value="rejected">Reddedildi</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-top: 1rem;">
+                        <label for="review-notes">Değerlendirme Notu:</label>
+                        <textarea id="review-notes" style="width: 100%; min-height: 100px; margin: 0.5rem 0; padding: 0.5rem;" placeholder="Başvuru hakkında notlarınız..."></textarea>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; text-align: right;">
+                        <button onclick="closeApplicationModal()" style="margin-right: 0.5rem; background: #95a5a6; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">İptal</button>
+                        <button onclick="sendToReferee()" style="margin-right: 0.5rem; background: #f39c12; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Hakeme İlet</button>
+                        <button onclick="saveApplicationReview()" style="background: #27ae60; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Kaydet</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Duyuru Yönetimi -->
+        <section id="admin-announcements" class="admin-section admin-content" style="display: none;">
+            <h2>Duyuru Yönetimi</h2>
+            <div id="announcement-message" class="admin-message" style="display: none;"></div>
+            
+            <!-- Duyuru Ekleme Formu -->
+            <div class="admin-form" style="background: #f8f9fa; padding: 2rem; border-radius: 8px; margin-bottom: 2rem;">
+                <h3>Yeni Duyuru Ekle</h3>
+                <form id="announcement-form">
+                    <div class="form-group" style="flex: 1 1 100%;">
+                        <label for="announcementTitle">Duyuru Başlığı:</label>
+                        <input type="text" id="announcementTitle" name="title" required style="width: 100%;">
+                    </div>
+                    
+                    <div class="form-group" style="flex: 1 1 100%;">
+                        <label for="announcementContent">Duyuru İçeriği:</label>
+                        <textarea id="announcementContent" name="content" rows="4" required style="width: 100%; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="announcementType">Duyuru Türü:</label>
+                        <select id="announcementType" name="type" required>
+                            <option value="info">Bilgilendirme</option>
+                            <option value="warning">Uyarı</option>
+                            <option value="success">Başarılı</option>
+                            <option value="event">Etkinlik</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="announcementPriority">Öncelik:</label>
+                        <select id="announcementPriority" name="priority" required>
+                            <option value="normal">Normal</option>
+                            <option value="high">Yüksek</option>
+                            <option value="urgent">Acil</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" style="flex: 1 1 100%;">
+                        <button type="submit" style="background: #27ae60; color: white; border: none; padding: 0.75rem 2rem; border-radius: 4px; cursor: pointer; font-size: 1rem;">
+                            📢 Duyuru Ekle
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Duyuru Listesi -->
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Başlık</th>
+                        <th>İçerik</th>
+                        <th>Tür</th>
+                        <th>Öncelik</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="announcements-table-body">
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Kullanıcı Yönetimi -->
+        <section id="admin-users" class="admin-section admin-content" style="display: none;">
+            <h2>Kullanıcı Yönetimi</h2>
+
+            <!-- Kullanıcı mesajları -->
+            <div id="user-message" class="admin-message" style="display: none;"></div>
+
+            <!-- Kullanıcı Arama ve Filtreleme -->
+            <div class="admin-form" style="margin-bottom: 2rem;">
+                <div class="form-group">
+                    <label for="userSearch">Kullanıcı Ara</label>
+                    <input type="text" id="userSearch" placeholder="Ad, soyad veya e-posta ile ara...">
+                </div>
+                <div class="form-group">
+                    <label for="userRoleFilter">Rol Filtresi</label>
+                    <select id="userRoleFilter">
+                        <option value="">Tüm Roller</option>
+                        <option value="user">Kullanıcı</option>
+                        <option value="admin">Admin</option>
+                        <option value="organizer">Organizatör</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="userStatusFilter">Durum Filtresi</label>
+                    <select id="userStatusFilter">
+                        <option value="">Tüm Durumlar</option>
+                        <option value="active">Aktif</option>
+                        <option value="inactive">Pasif</option>
+                        <option value="banned">Yasaklı</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Kullanıcı İstatistikleri -->
+            <div class="user-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                <div class="stat-card" style="background: #f8f9fa; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <h3 id="totalUsers">0</h3>
+                    <p>Toplam Kullanıcı</p>
+                </div>
+                <div class="stat-card" style="background: #d4edda; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <h3 id="activeUsers">0</h3>
+                    <p>Aktif Kullanıcı</p>
+                </div>
+                <div class="stat-card" style="background: #fff3cd; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <h3 id="inactiveUsers">0</h3>
+                    <p>Pasif Kullanıcı</p>
+                </div>
+                <div class="stat-card" style="background: #f8d7da; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <h3 id="bannedUsers">0</h3>
+                    <p>Yasaklı Kullanıcı</p>
+                </div>
+            </div>
+
+            <!-- Kullanıcı Listesi -->
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>E-posta</th>
+                        <th>Kurum</th>
+                        <th>Telefon</th>
+                        <th>Durum</th>
+                        <th>Rol</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table-body">
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script src="js/main_admin.js"></script>
+    <script>
+        // Admin sayfası başlangıcı - Authentication kontrolü
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Admin paneli yükleniyor...');
+            
+            // Token kontrol et
+            const token = localStorage.getItem('token');
+            const userRole = localStorage.getItem('userRole');
+            
+            if (!token || userRole !== 'admin') {
+                console.warn('⚠️ Admin izni gerekli, login sayfasına yönlendiriliyor...');
+                alert('Admin paneline erişim için yönetici hesabı gereklidir. Lütfen yönetici hesabıyla giriş yapınız.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            console.log('✅ Admin yetkisi doğrulandı');
+            
+            // İlk tab'ı aktif et
+            showAdminTab('events');
+            
+            // Event listener'ları ekle
+            const eventForm = document.getElementById('event-form');
+            const speakerForm = document.getElementById('speaker-form');
+            
+            if (eventForm) {
+                console.log('✅ Etkinlik formu bulundu, event listener ekleniyor...');
+                eventForm.addEventListener('submit', handleEventForm);
+            } else {
+                console.error('❌ Etkinlik formu bulunamadı!');
+            }
+            
+            if (speakerForm) {
+                console.log('✅ Konuşmacı formu bulundu, event listener ekleniyor...');
+                speakerForm.addEventListener('submit', handleSpeakerForm);
+            } else {
+                console.error('❌ Konuşmacı formu bulunamadı!');
+            }
+            
+            // Inline konuşmacı formu
+            const speakerFormInline = document.getElementById('speaker-form-inline');
+            if (speakerFormInline) {
+                console.log('✅ Inline konuşmacı formu bulundu, event listener ekleniyor...');
+                speakerFormInline.addEventListener('submit', handleSpeakerFormInline);
+            }
+        });
+    </script>
+
+    <!-- Duyuru Düzenleme Modalı -->
+    <div id="editAnnouncementModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 10px; width: 90%; max-width: 600px; max-height: 90%; overflow-y: auto;">
+            <h3 style="margin-top: 0; color: #2c3e50;">Duyuru Düzenle</h3>
+            
+            <form id="editAnnouncementForm">
+                <input type="hidden" id="editAnnouncementId">
+                
+                <div style="margin-bottom: 1rem;">
+                    <label for="editAnnouncementTitle" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Başlık:</label>
+                    <input type="text" id="editAnnouncementTitle" name="title" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <label for="editAnnouncementContent" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">İçerik:</label>
+                    <textarea id="editAnnouncementContent" name="content" required rows="4" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; resize: vertical;"></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="flex: 1;">
+                        <label for="editAnnouncementType" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Tür:</label>
+                        <select id="editAnnouncementType" name="type" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="info">Bilgi</option>
+                            <option value="warning">Uyarı</option>
+                            <option value="success">Başarı</option>
+                            <option value="event">Etkinlik</option>
+                        </select>
+                    </div>
+                    
+                    <div style="flex: 1;">
+                        <label for="editAnnouncementPriority" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Öncelik:</label>
+                        <select id="editAnnouncementPriority" name="priority" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="normal">Normal</option>
+                            <option value="high">Yüksek</option>
+                            <option value="urgent">Acil</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <label for="editAnnouncementDate" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Tarih:</label>
+                    <input type="datetime-local" id="editAnnouncementDate" name="date" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" id="editAnnouncementActive" name="isActive">
+                        <span style="font-weight: bold;">Aktif</span>
+                    </label>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" onclick="closeEditAnnouncementModal()" style="background: #6c757d; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer;">
+                        İptal
+                    </button>
+                    <button type="submit" style="background: #28a745; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer;">
+                        Güncelle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Katılımcılar Modal -->
+    <div id="participants-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Etkinlik Katılımcıları - <span id="participants-event-title"></span></h2>
+                <button class="close-btn" onclick="closeParticipantsModal()">&times;</button>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>E-posta</th>
+                        <th>Telefon</th>
+                        <th>Kurum</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="participants-modal-table"></tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

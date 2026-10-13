@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap - Sempozyum & Kongre</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/forms.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <img src="image/mtülogo.png" alt="MTÜ Logo" class="logo-img">
+                    <h3>Malatya Turgut Özal Üniversitesi Kongre & Sempozyum Resmi Sayfası</h3>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link" data-translate="Ana Sayfa">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="events.html" class="nav-link" data-translate="Etkinlikler">Etkinlikler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="speakers.html" class="nav-link" data-translate="Konuşmacılar">Konuşmacılar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="register.html" class="nav-link" data-translate="Kayıt Ol">Kayıt Ol</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="login.html" class="nav-link active" data-translate="Giriş Yap">Giriş Yap</a>
+                    </li>
+                </ul>
+                
+                <!-- Dil Değiştirme Butonları -->
+                <div class="language-switcher">
+                    <button class="lang-btn main-lang-btn" onclick="toggleLanguageDropdown()">
+                        <span class="current-lang">TR</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="language-dropdown" id="language-dropdown">
+                        <button class="lang-option active" onclick="switchLanguage('tr')" data-lang="tr">
+                            <span class="flag">🇹🇷</span> Türkçe
+                        </button>
+                        <button class="lang-option" onclick="switchLanguage('en')" data-lang="en">
+                            <span class="flag">🇺🇸</span> English
+                        </button>
+                        <button class="lang-option" onclick="switchLanguage('fr')" data-lang="fr">
+                            <span class="flag">🇫🇷</span> Français
+                        </button>
+                        <button class="lang-option" onclick="switchLanguage('de')" data-lang="de">
+                            <span class="flag">🇩🇪</span> Deutsch
+                        </button>
+                        <button class="lang-option" onclick="switchLanguage('ru')" data-lang="ru">
+                            <span class="flag">🇷🇺</span> Русский
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="user-info" class="user-info" style="display: none;">
+                    <span id="user-name" class="user-name"></span>
+                    <a href="my-participations.html" class="nav-link" id="my-participations-nav" style="display: none;" data-translate="Katılımlarım">Katılımlarım</a>
+                    <a href="my-applications.html" class="nav-link" id="my-applications-nav" style="display: none;" data-translate="Başvurularım">Başvurularım</a>
+                    <a href="application.html" class="nav-link" id="application-nav" style="display: none;" data-translate="Yeni Başvuru">Yeni Başvuru</a>
+                    <button id="logout-btn" class="logout-btn" data-translate="Çıkış">Çıkış</button>
+                </div>
+                <div class="nav-toggle" id="mobile-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="section active" id="login">
+            <div class="container">
+                <div class="form-container">
+                    <div class="form-header">
+                        <div class="form-icon">
+                            <img src="image/mtülogo.png" alt="MTÜ Logo" style="width: 120px; height: 120px; object-fit: contain;">
+                        </div>
+                        <h2 data-translate="Giriş Yap">Malatya Turgut Özal Üniversitesi</h2>
+                      
+                    </div>
+
+                    <form id="login-form" class="form">
+                        <div class="form-group">
+                            <label for="userType" data-translate="Giriş Türü">Giriş Türü</label>
+                            <select id="userType" name="userType" required>
+                                <option value="user" selected data-translate="Üye Girişi">👤 Üye Girişi</option>
+                                <option value="admin" data-translate="Yönetici Girişi">⚡ Yönetici Girişi</option>
+                                <option value="referee" data-translate="Hakem Girişi">🏛️ Hakem Girişi</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="login-email" data-translate="E-posta">E-posta</label>
+                            <input type="email" id="login-email" name="email" required data-translate-placeholder="E-posta adresinizi girin" placeholder="E-posta adresinizi girin">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="login-password" data-translate="Şifre">Şifre</label>
+                            <input type="password" id="login-password" name="password" required data-translate-placeholder="Şifrenizi girin" placeholder="Şifrenizi girin">
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="remember-me" name="rememberMe">
+                                <span class="checkmark"></span>
+                                <span data-translate="Beni hatırla">Beni hatırla</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" data-translate="Giriş Yap">Giriş Yap</button>
+                    </form>
+
+                    <div class="form-footer">
+                        <div class="forgot-password">
+                            <a href="forgot-password.html" style="color: #667eea; text-decoration: none; font-size: 0.95rem; font-weight: 500;">
+                                <span data-translate="Şifremi Unuttum">Şifremi Unuttum</span>
+                            </a>
+                        </div>
+                        
+                        <div class="register-link">
+                            <p data-translate="Hesabınız yok mu?">Hesabınız yok mu? 
+                                <a href="register.html" style="color: #667eea; text-decoration: none; font-weight: 600;">
+                                    <span data-translate="Kayıt Olun">Kayıt Olun</span>
+                                </a>
+                            </p>
+                            <button type="button" class="btn btn-secondary" onclick="window.location.href='register.html'" data-translate="Hesap Oluştur">Hesap Oluştur</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 data-translate="İletişim">İletişim</h3>
+                    <p>📧 info@sempozyumkongre.com</p>
+                    <p>📞 +90 (212) 123 45 67</p>
+                </div>
+                <div class="footer-section">
+                    <h3 data-translate="Sosyal Medya">Sosyal Medya</h3>
+                    <p>🔗 LinkedIn | Twitter | Facebook</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-translate="Tüm Hakları Saklıdır">&copy; 2024 Sempozyum & Kongre. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeni Başvuru - Sempozyum & Kongre</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/forms.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <img src="image/mtülogo.png" alt="MTÜ Logo" class="logo-img">
+                    <h3>Malatya Turgut Özal Üniversitesi Kongre & Sempozyum Resmi Sayfası</h3>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link" data-translate="Ana Sayfa">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="events.html" class="nav-link" data-translate="Etkinlikler">Etkinlikler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="speakers.html" class="nav-link" data-translate="Konuşmacılar">Konuşmacılar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="register.html" class="nav-link" data-translate="Kayıt Ol">Kayıt Ol</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="login.html" class="nav-link" data-translate="Giriş Yap">Giriş Yap</a>
+                    </li>
+                </ul>
+                
+                <!-- Dil Değiştirme Butonları -->
+                <div class="language-switcher">
+                    <button class="lang-btn main-lang-btn" onclick="toggleLanguageDropdown()">
+                        <span class="current-lang">TR</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="language-dropdown" id="language-dropdown">
+                        <button class="lang-option active" onclick="switchLanguage('tr')" data-lang="tr">
+                            <span class="flag">🇹🇷</span> Türkçe
+                        </button>
+                        <button class="lang-option" onclick="switchLanguage('en')" data-lang="en">
+                            <span class="flag">🇺🇸</span> English
+                        </button>
+                        <button class="lang-option" onclick="switchLanguage('fr')" data-lang="fr">
+                            <span class="flag">🇫🇷</span> Français
+                        </button>
+                        <button class="lang-option" onclick="switchLanguage('de')" data-lang="de">
+                            <span class="flag">🇩🇪</span> Deutsch
+                        </button>
+                        <button class="lang-option" onclick="switchLanguage('ru')" data-lang="ru">
+                            <span class="flag">🇷🇺</span> Русский
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="user-info" class="user-info" style="display: none;">
+                    <span id="user-name" class="user-name"></span>
+                    <a href="my-participations.html" class="nav-link" id="my-participations-nav" style="display: none;" data-translate="Katılımlarım">Katılımlarım</a>
+                    <a href="my-applications.html" class="nav-link" id="my-applications-nav" style="display: none;" data-translate="Başvurularım">Başvurularım</a>
+                    <a href="application.html" class="nav-link active" id="application-nav" data-translate="Yeni Başvuru">Yeni Başvuru</a>
+                    <button id="logout-btn" class="logout-btn" data-translate="Çıkış">Çıkış</button>
+                </div>
+                <div class="nav-toggle" id="mobile-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="section active" id="application">
+            <div class="container">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2 data-translate="Yeni Başvuru">📝 Yeni Başvuru</h2>
+                        <p data-translate="Konuşmacı olmak için başvurun">Konuşmacı olmak için başvurun</p>
+                    </div>
+
+                    <form id="application-form" class="form">
+                        <div class="form-group">
+                            <label for="app-title" data-translate="Başlık">Başlık</label>
+                            <input type="text" id="app-title" name="title" required placeholder="Sunumunuzun başlığını girin">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="app-abstract" data-translate="Özet">Özet</label>
+                            <textarea id="app-abstract" name="abstract" required rows="6" placeholder="Sunumunuzun özetini yazın (maksimum 500 kelime)"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="app-category" data-translate="Kategori">Kategori</label>
+                            <select id="app-category" name="category" required>
+                                <option value="">Kategori seçin</option>
+                                <option value="technology">Teknoloji</option>
+                                <option value="medicine">Tıp</option>
+                                <option value="science">Bilim</option>
+                                <option value="education">Eğitim</option>
+                                <option value="business">İş Dünyası</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="app-keywords" data-translate="Anahtar Kelimeler">Anahtar Kelimeler</label>
+                            <input type="text" id="app-keywords" name="keywords" placeholder="Anahtar kelimeleri virgülle ayırın">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="app-duration" data-translate="Sunum Süresi">Sunum Süresi (dakika)</label>
+                            <select id="app-duration" name="duration" required>
+                                <option value="">Süre seçin</option>
+                                <option value="15">15 dakika</option>
+                                <option value="30">30 dakika</option>
+                                <option value="45">45 dakika</option>
+                                <option value="60">60 dakika</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="app-biography" data-translate="Biyografi">Biyografi</label>
+                            <textarea id="app-biography" name="biography" rows="4" placeholder="Kısa biyografinizi yazın"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="app-experience" data-translate="Deneyim">Deneyim</label>
+                            <textarea id="app-experience" name="experience" rows="4" placeholder="İlgili deneyimlerinizi yazın"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" data-translate="Başvuru Gönder">Başvuru Gönder</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 data-translate="İletişim">İletişim</h3>
+                    <p>📧 info@sempozyumkongre.com</p>
+                    <p>📞 +90 (212) 123 45 67</p>
+                </div>
+                <div class="footer-section">
+                    <h3 data-translate="Sosyal Medya">Sosyal Medya</h3>
+                    <p>🔗 LinkedIn | Twitter | Facebook</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-translate="Tüm Hakları Saklıdır">&copy; 2024 Sempozyum & Kongre. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

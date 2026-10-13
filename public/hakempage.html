@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hakem Paneli</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .hakem-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .hakem-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+
+        .hakem-header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+            font-weight: 700;
+        }
+
+        .hakem-header p {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin: 0;
+        }
+
+        .hakem-filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .btn-refresh {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            align-self: flex-end;
+        }
+
+        .btn-refresh:hover {
+            background: #229954;
+        }
+
+        .hakem-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3498db;
+        }
+
+        .hakem-applications {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .application-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .application-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            position: relative;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .card-subtitle {
+            font-size: 0.9rem;
+            margin: 0.3rem 0 0 0;
+            opacity: 0.9;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .info-value {
+            color: #7f8c8d;
+        }
+
+        .card-footer {
+            padding: 1rem;
+            border-top: 1px solid #ecf0f1;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-review {
+            flex: 1;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-review:hover {
+            background: #2980b9;
+        }
+
+        .no-applications {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #ecf0f1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .review-section {
+            margin-bottom: 2rem;
+        }
+
+        .review-section h3 {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin: 0 0 1rem 0;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-item label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-item p {
+            color: #7f8c8d;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #ecf0f1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: #f8f9fa;
+        }
+
+        .btn-approve,
+        .btn-reject,
+        .btn-cancel {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-approve {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #229954;
+        }
+
+        .btn-reject {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #c0392b;
+        }
+
+        .btn-cancel {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+
+        @media (max-width: 768px) {
+            .hakem-filters {
+                grid-template-columns: 1fr;
+            }
+
+            .hakem-applications {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-footer {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h3>Hakem Paneli</h3>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Ana Sayfa</a>
+                    </li>
+                </ul>
+                <div id="user-info" class="user-info">
+                    <span id="user-name" class="user-name"></span>
+                    <button id="logout-btn" class="logout-btn">Çıkış</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="hakem-container">
+            <div class="hakem-header">
+                <h1>Hakem Paneli</h1>
+                <p>Gönderilen başvuruları değerlendirin</p>
+            </div>
+
+            <div class="hakem-filters">
+                <div class="filter-group">
+                    <label>Durum:</label>
+                    <select id="status-filter" onchange="filterApplications()">
+                        <option value="">Tümü</option>
+                        <option value="sent_to_referee">Hakeme Gönderilen</option>
+                        <option value="approved">Onaylanan</option>
+                        <option value="rejected">Reddedilen</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Ara:</label>
+                    <input type="text" id="search-input" placeholder="Başvuru adı ara..." onkeyup="filterApplications()">
+                </div>
+                <button class="btn-refresh" onclick="loadRefereeApplications()">Yenile</button>
+            </div>
+
+            <div class="hakem-stats">
+                <div class="stat-card">
+                    <span class="stat-label">Toplam Başvuru</span>
+                    <span class="stat-value" id="total-count">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Bekleme</span>
+                    <span class="stat-value" id="pending-count">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Onaylanan</span>
+                    <span class="stat-value" id="approved-count">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Reddedilen</span>
+                    <span class="stat-value" id="rejected-count">0</span>
+                </div>
+            </div>
+
+            <div class="hakem-applications" id="applications-container">
+                <div class="no-applications">Başvurular yükleniyor...</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Review Modal -->
+    <div id="review-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Başvuru İncelemesi</h2>
+                <button class="close-btn" onclick="closeReviewModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="review-section">
+                    <h3>Başvurucu Bilgileri</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Ad Soyad</label>
+                            <p id="review-fullname"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>E-posta</label>
+                            <p id="review-email"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Organizasyon</label>
+                            <p id="review-organization"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Etkinlik</label>
+                            <p id="review-event"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="review-section">
+                    <h3>Sunum Detayları</h3>
+                    <div class="info-item">
+                        <label>Sunum Başlığı</label>
+                        <p id="review-title"></p>
+                    </div>
+                    <div class="info-item">
+                        <label>Açıklama</label>
+                        <p id="review-description"></p>
+                    </div>
+                </div>
+
+                <div class="review-section">
+                    <h3>Değerlendirmeniz</h3>
+                    <div class="form-group">
+                        <label for="referee-notes">Değerlendirme Notları</label>
+                        <textarea id="referee-notes" placeholder="Değerlendirme notlarınızı yazınız..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="referee-rating">Puan</label>
+                        <select id="referee-rating">
+                            <option value="">Puan seçiniz</option>
+                            <option value="1">1 - Zayıf</option>
+                            <option value="2">2 - Geliştirilmesi Gereken</option>
+                            <option value="3">3 - Orta</option>
+                            <option value="4">4 - İyi</option>
+                            <option value="5">5 - Mükemmel</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-reject" onclick="rejectApplication()">Reddet</button>
+                <button class="btn-approve" onclick="approveApplication()">Onayla</button>
+                <button class="btn-cancel" onclick="closeReviewModal()">İptal</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        const API_BASE_URL = '/api';
+        let allApplications = [];
+        let currentReviewApplication = null;
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            const userRole = localStorage.getItem('userRole');
+            
+            if (!token || userRole !== 'referee') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Kullanıcı adını göster
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const userNameSpan = document.getElementById('user-name');
+            if (userNameSpan && userData.fullName) {
+                userNameSpan.textContent = userData.fullName;
+            }
+
+            // Çıkış butonu
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+
+            loadRefereeApplications();
+        });
+
+        async function loadRefereeApplications() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE_URL}/applications?status=sent_to_referee`, {
+                    headers: {'Authorization': `Bearer ${token}`}
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const applications = await response.json();
+                allApplications = Array.isArray(applications) ? applications : applications.applications || [];
+                
+                displayApplications(allApplications);
+                updateStatistics();
+            } catch (error) {
+                console.error('Başvurular yüklenemedi:', error);
+                document.getElementById('applications-container').innerHTML = '<div class="no-applications">Başvurular yüklenemedi. Lütfen sayfayı yenileyin.</div>';
+            }
+        }
+
+        function displayApplications(apps) {
+            const container = document.getElementById('applications-container');
+            
+            if (!apps || apps.length === 0) {
+                container.innerHTML = '<div class="no-applications">Henüz başvuru bulunmuyor</div>';
+                return;
+            }
+
+            container.innerHTML = apps.map(app => `
+                <div class="application-card">
+                    <div class="card-header">
+                        <h3 class="card-title">${escapeHtml(app.presentationTitle || '')}</h3>
+                        <p class="card-subtitle">${escapeHtml(app.eventId?.title || '')}</p>
+                        <span class="status-badge">${getStatusText(app.status)}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-row">
+                            <span class="info-label">Ad Soyad:</span>
+                            <span class="info-value">${escapeHtml(app.userId?.fullName || '')}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">E-posta:</span>
+                            <span class="info-value">${escapeHtml(app.userId?.email || '')}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Kurum:</span>
+                            <span class="info-value">${escapeHtml(app.organization || '-')}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn-review" onclick="openReviewModal('${app._id}')">İncele</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStatistics() {
+            const total = allApplications.length;
+            const pending = allApplications.filter(a => a.status === 'sent_to_referee').length;
+            const approved = allApplications.filter(a => a.status === 'approved').length;
+            const rejected = allApplications.filter(a => a.status === 'rejected').length;
+
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('pending-count').textContent = pending;
+            document.getElementById('approved-count').textContent = approved;
+            document.getElementById('rejected-count').textContent = rejected;
+        }
+
+        function filterApplications() {
+            const status = document.getElementById('status-filter').value;
+            const search = document.getElementById('search-input').value.toLowerCase();
+
+            let filtered = allApplications;
+
+            if (status) {
+                filtered = filtered.filter(a => a.status === status);
+            }
+
+            if (search) {
+                filtered = filtered.filter(a =>
+                    a.presentationTitle?.toLowerCase().includes(search) ||
+                    a.userId?.fullName?.toLowerCase().includes(search) ||
+                    a.userId?.email?.toLowerCase().includes(search)
+                );
+            }
+
+            displayApplications(filtered);
+        }
+
+        async function openReviewModal(applicationId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE_URL}/applications/${applicationId}`, {
+                    headers: {'Authorization': `Bearer ${token}`}
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const app = await response.json();
+                currentReviewApplication = app;
+
+                document.getElementById('review-fullname').textContent = app.userId?.fullName || '';
+                document.getElementById('review-email').textContent = app.userId?.email || '';
+                document.getElementById('review-organization').textContent = app.organization || '-';
+                document.getElementById('review-event').textContent = app.eventId?.title || '';
+                document.getElementById('review-title').textContent = app.presentationTitle || '';
+                document.getElementById('review-description').textContent = app.description || '';
+                document.getElementById('referee-notes').value = app.refereeNotes || '';
+                document.getElementById('referee-rating').value = app.refereeRating || '';
+
+                document.getElementById('review-modal').style.display = 'flex';
+            } catch (error) {
+                console.error('Başvuru yüklenemedi:', error);
+                alert('Başvuru detayları yüklenemedi');
+            }
+        }
+
+        async function approveApplication() {
+            if (!currentReviewApplication) return;
+            
+            const notes = document.getElementById('referee-notes').value;
+            const rating = document.getElementById('referee-rating').value;
+
+            if (!rating) {
+                alert('Lütfen puan seçiniz');
+                return;
+            }
+
+            if (!confirm('Bu başvuruyu onaylamak istediğinizden emin misiniz?')) {
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE_URL}/applications/${currentReviewApplication._id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        status: 'approved',
+                        refereeNotes: notes,
+                        refereeRating: rating
+                    })
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                alert('Başvuru onaylandı');
+                closeReviewModal();
+                loadRefereeApplications();
+            } catch (error) {
+                console.error('Onaylama hatası:', error);
+                alert('Başvuru onaylanırken hata oluştu');
+            }
+        }
+
+        async function rejectApplication() {
+            if (!currentReviewApplication) return;
+            
+            const notes = document.getElementById('referee-notes').value;
+            const rating = document.getElementById('referee-rating').value;
+
+            if (!rating) {
+                alert('Lütfen puan seçiniz');
+                return;
+            }
+
+            if (!notes.trim()) {
+                alert('Lütfen ret nedenini yazınız');
+                return;
+            }
+
+            if (!confirm('Bu başvuruyu reddetmek istediğinizden emin misiniz?')) {
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE_URL}/applications/${currentReviewApplication._id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        status: 'rejected',
+                        refereeNotes: notes,
+                        refereeRating: rating
+                    })
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                alert('Başvuru reddedildi');
+                closeReviewModal();
+                loadRefereeApplications();
+            } catch (error) {
+                console.error('Red hatası:', error);
+                alert('Başvuru reddedilirken hata oluştu');
+            }
+        }
+
+        function closeReviewModal() {
+            document.getElementById('review-modal').style.display = 'none';
+            currentReviewApplication = null;
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('review-modal');
+            if (event.target === modal) {
+                closeReviewModal();
+            }
+        };
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'sent_to_referee': 'Hakeme Gönderilen',
+                'approved': 'Onaylanan',
+                'rejected': 'Reddedilen',
+                'pending': 'Bekleme'
+            };
+            return statusMap[status] || status;
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('userData');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

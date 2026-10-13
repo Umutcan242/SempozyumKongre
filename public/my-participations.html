@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katılımlarım - Sempozyum & Kongre</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/my-participations.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <img src="image/mtülogo.png" alt="MTÜ Logo" class="logo-img">
+                    <h3>Malatya Turgut Özal Üniversitesi Kongre & Sempozyum Resmi Sayfası</h3>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link" data-translate="Ana Sayfa">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="events.html" class="nav-link" data-translate="Etkinlikler">Etkinlikler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="speakers.html" class="nav-link" data-translate="Konuşmacılar">Konuşmacılar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="register.html" class="nav-link" data-translate="Kayıt Ol">Kayıt Ol</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="login.html" class="nav-link" data-translate="Giriş Yap">Giriş Yap</a>
+                    </li>
+                </ul>
+                
+                <!-- Dil Değiştirme Butonları -->
+                <div class="language-switcher">
+                    <button class="lang-btn main-lang-btn" onclick="toggleLanguageDropdown()">
+                        <span class="current-lang">TR</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="language-dropdown" id="language-dropdown">
+                        <button class="lang-option active" onclick="switchLanguage('tr')" data-lang="tr">
+                            <span class="flag">🇹🇷</span> Türkçe
+                        </button>
+                        <button class="lang-option" onclick="switchLanguage('en')" data-lang="en">
+                            <span class="flag">🇺🇸</span> English
+                        </button>
+                        <button class="lang-option" onclick="switchLanguage('fr')" data-lang="fr">
+                            <span class="flag">🇫🇷</span> Français
+                        </button>
+                        <button class="lang-option" onclick="switchLanguage('de')" data-lang="de">
+                            <span class="flag">🇩🇪</span> Deutsch
+                        </button>
+                        <button class="lang-option" onclick="switchLanguage('ru')" data-lang="ru">
+                            <span class="flag">🇷🇺</span> Русский
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="user-info" class="user-info" style="display: none;">
+                    <span id="user-name" class="user-name"></span>
+                    <a href="my-participations.html" class="nav-link active" id="my-participations-nav" style="display: none;" data-translate="Katılımlarım">Katılımlarım</a>
+                    <a href="my-applications.html" class="nav-link" id="my-applications-nav" style="display: none;" data-translate="Başvurularım">Başvurularım</a>
+                    <a href="application.html" class="nav-link" id="application-nav" style="display: none;" data-translate="Yeni Başvuru">Yeni Başvuru</a>
+                    <button id="logout-btn" class="logout-btn" data-translate="Çıkış">Çıkış</button>
+                </div>
+                <div class="nav-toggle" id="mobile-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="section active" id="participations">
+            <div class="container">
+                <div class="participations-header">
+                    <h1 data-translate="Katılımlarım">Katılımlarım</h1>
+                    <p data-translate="Kayıt yaptığınız etkinlikleri yönetin">Kayıt yaptığınız etkinlikleri yönetin</p>
+                </div>
+
+                <!-- Duruma Göre Filtre -->
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label data-translate="Duruma Göre Filtrele">Duruma Göre Filtrele:</label>
+                        <select id="status-filter">
+                            <option value="">-- <span data-translate="Tümü">Tümü</span> --</option>
+                            <option value="upcoming" data-translate="Yaklaşan">📅 Yaklaşan</option>
+                            <option value="ongoing" data-translate="Devam Eden">🔴 Devam Eden</option>
+                            <option value="completed" data-translate="Tamamlanan">✓ Tamamlanan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Katılımlar Listesi -->
+                <div class="participations-list" id="participations-list">
+                    <div class="loading" data-translate="Katılımlar yükleniyor">Katılımlar yükleniyor...</div>
+                </div>
+
+                <!-- Katılım Yok Mesajı -->
+                <div class="no-participations" id="no-participations" style="display: none;">
+                    <p data-translate="Henüz etkinlik katılımı bulunmamaktadır">Henüz etkinlik katılımı bulunmamaktadır.</p>
+                    <a href="events.html" class="btn btn-primary" data-translate="Etkinlikleri Gör">Etkinlikleri Gör</a>
+                </div>
+
+                <!-- Katılım Detayları Modal -->
+                <div id="participation-detail-modal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 data-translate="Etkinlik Detayları">Etkinlik Detayları</h2>
+                            <button class="close-btn" onclick="closeParticipationModal()">&times;</button>
+                        </div>
+                        <div class="modal-body" id="modal-body">
+                            <!-- Etkinlik detayları buraya gelecek -->
+                        </div>
+                        <div class="modal-footer">
+                            <button onclick="closeParticipationModal()" class="btn btn-secondary" data-translate="Kapat">Kapat</button>
+                            <button id="cancel-participation-btn" class="btn btn-danger" onclick="cancelParticipation()" style="display: none;" data-translate="Katılımdan Vazgeç">Katılımdan Vazgeç</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 data-translate="İletişim">İletişim</h3>
+                    <p>📧 info@sempozyumkongre.com</p>
+                    <p>📞 +90 (212) 123 45 67</p>
+                </div>
+                <div class="footer-section">
+                    <h3 data-translate="Sosyal Medya">Sosyal Medya</h3>
+                    <p>🔗 LinkedIn | Twitter | Facebook</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-translate="Tüm Hakları Saklıdır">&copy; 2024 Sempozyum & Kongre. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/my-participations.js"></script>
+</body>
+</html>

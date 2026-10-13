@@ -1,0 +1,419 @@
+/* Katılımlarım Sayfası Stilleri */
+
+.participations-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(200, 230, 255, 0.1));
+    border-radius: 15px;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+}
+
+.participations-header h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.participations-header p {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+/* Filtre Bölümü */
+.filter-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(61, 67, 112, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.95rem;
+}
+
+.filter-group select {
+    padding: 10px 15px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: white;
+    color: #2c3e50;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 200px;
+}
+
+.filter-group select:hover {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+/* Katılımlar Listesi */
+.participations-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.participation-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #e1e8ed;
+}
+
+.participation-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+    transform: translateY(-5px);
+}
+
+.participation-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.card-event-title {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    margin-top: 0.5rem;
+    font-weight: 700;
+}
+
+.card-event-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.info-row .icon {
+    min-width: 20px;
+    font-size: 1.1rem;
+}
+
+.info-row .label {
+    font-weight: 600;
+    color: #999;
+    min-width: 80px;
+    font-size: 0.85rem;
+}
+
+.info-row .value {
+    color: #2c3e50;
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.status-upcoming {
+    background: rgba(33, 150, 243, 0.2);
+    color: #2196f3;
+    border: 1px solid #2196f3;
+}
+
+.status-ongoing {
+    background: rgba(255, 152, 0, 0.2);
+    color: #ff9800;
+    border: 1px solid #ff9800;
+}
+
+.status-completed {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+    border: 1px solid #4caf50;
+}
+
+/* Kart Footer */
+.card-footer {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+}
+
+.btn-detail {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-detail:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-cancel {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    border: 1px solid #f44336;
+}
+
+.btn-cancel:hover {
+    background: rgba(244, 67, 54, 0.2);
+}
+
+/* Katılım Yok Mesajı */
+.no-participations {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 15px;
+    border: 2px dashed #e1e8ed;
+}
+
+.no-participations p {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.no-participations .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+}
+
+/* Loading State */
+.loading {
+    text-align: center;
+    padding: 3rem 2rem;
+    font-size: 1.1rem;
+    color: #667eea;
+    font-weight: 600;
+    grid-column: 1 / -1;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.modal-header h2 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #2c3e50;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-body-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.modal-body-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.modal-body-item label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.modal-body-item value {
+    font-size: 1rem;
+    color: #2c3e50;
+    font-weight: 500;
+    display: block;
+}
+
+.modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid #e1e8ed;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.btn-secondary {
+    background: #e1e8ed;
+    color: #2c3e50;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #d0d8e0;
+}
+
+.btn-danger {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    border: 1px solid #f44336;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background: rgba(244, 67, 54, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .participations-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .participations-list {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-group select {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .card-footer {
+        flex-direction: column;
+    }
+
+    .btn-small {
+        width: 100%;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+
+    .btn-secondary, .btn-danger {
+        width: 100%;
+    }
+}
